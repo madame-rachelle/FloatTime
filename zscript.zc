@@ -4,9 +4,9 @@ class FloatTimeEventHandler : StaticEventHandler
 {
 	ThinkerIterator it;
 
-	float mytics;
+	double mytics;
 
-	float lastmytics;
+	int myticsint;
 
 	void SetPos(actor mo, vector3 newpos)
 	{
@@ -26,13 +26,13 @@ class FloatTimeEventHandler : StaticEventHandler
 		else
 			it.Reinit();
 
-		float ticdelta = 1.0 * game_timescale;
+		double ticdelta = game_timescale;
 		if (game_freeze)
 			ticdelta = 0.0;
 
 		mytics += ticdelta;
 
-		int catchup = (int(mytics) - int(lastmytics)) - 1;
+		int catchup = (int(mytics) - int(myticsint)) - 1;
 
 		//console.printf("catchup: %i, lastmytics: %f, mytics: %f\n", catchup, lastmytics, mytics);
 
@@ -59,7 +59,7 @@ class FloatTimeEventHandler : StaticEventHandler
 				mo.Tics -= thiscatchup;
 			}
 		}
-		lastmytics = mytics;
+		myticsint += catchup + 1;
 	}
 }
 
