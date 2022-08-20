@@ -1,0 +1,65 @@
+Version "4.8.0"
+
+class FloatTimeEventHandler : StaticEventHandler
+{
+	ThinkerIterator it;
+
+	float mytics;
+
+	float lastmytics;
+
+	void SetPos(actor mo, vector3 newpos)
+	{
+		vector3 moveto = mo.pos - newpos;
+		mo.Warp(null, moveto.x, moveto.y, moveto.z);
+	}
+
+	Vector3 V3Mul(vector3 vin, float fin)
+	{
+		return (vin.x * fin, vin.y * fin, vin.z * fin);
+	}
+
+	override void WorldTick()
+	{
+		if (!it)
+			it = ThinkerIterator.Create("Actor", Thinker.STAT_DEFAULT);
+		else
+			it.Reinit();
+
+		float ticdelta = 1.0 * game_timescale;
+		if (game_freeze)
+			ticdelta = 0.0;
+
+		mytics += ticdelta;
+
+		int catchup = (int(mytics) - int(lastmytics)) - 1;
+
+		//console.printf("catchup: %i, lastmytics: %f, mytics: %f\n", catchup, lastmytics, mytics);
+
+		actor mo;
+
+		while (mo = Actor(it.Next()))
+		{
+			if ((catchup < 0) && !(mo.player) && (mo.Tics > 0))
+			{
+				mo.Tics++;
+				SetPos(mo, (mo.Pos) - (mo.Vel) * 2.0);
+			}
+			int thiscatchup = catchup;
+			while ((thiscatchup > 0) && !(mo.player) && (mo.Tics > 0) && (mo.Tics < thiscatchup))
+			{
+				thiscatchup -= mo.Tics;
+				SetPos(mo, (mo.Pos) + (mo.Vel) * mo.Tics);
+				mo.Tics = 0;
+				mo.Tick();
+			}
+			if ((thiscatchup > 0) && !(mo.player) && (mo.Tics > 0) && (mo.Tics > thiscatchup))
+			{
+				SetPos(mo, (mo.Pos) + (mo.Vel) * thiscatchup);
+				mo.Tics -= thiscatchup;
+			}
+		}
+		lastmytics = mytics;
+	}
+}
+

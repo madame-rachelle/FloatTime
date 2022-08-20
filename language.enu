@@ -1,0 +1,8 @@
+[enu default]
+SMPBOptions = "Slaughter Map Performance Booster Options";
+SMPBEnabled = "Enable SMPB";
+SMPBTicRateInfo = "Longer - slower, more performance boost --->";
+SMPBTicRate = "SMPB Slowdown Rate (Tics)";
+SMPBRangeInfo = "<--- Lower = more strict, more performance boost";
+SMPBRange = "SMPB Range Check";
+SMPBDistAggro = "Slowed (distant) monsters become more aggressive";
