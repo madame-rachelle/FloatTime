@@ -21,11 +21,6 @@ class FloatTimeEventHandler : StaticEventHandler
 
 	override void WorldTick()
 	{
-		if (!it)
-			it = ThinkerIterator.Create("Actor", Thinker.STAT_DEFAULT);
-		else
-			it.Reinit();
-
 		double ticdelta = game_timescale;
 		if (game_freeze)
 			ticdelta = 0.0;
@@ -36,24 +31,34 @@ class FloatTimeEventHandler : StaticEventHandler
 
 		//console.printf("catchup: %i, lastmytics: %f, mytics: %f\n", catchup, lastmytics, mytics);
 
+		if (!it)
+			it = ThinkerIterator.Create("Actor", Thinker.STAT_DEFAULT);
+		else
+			it.Reinit();
+
 		actor mo;
 
 		while (mo = Actor(it.Next()))
 		{
-			if ((catchup < 0) && !(mo.player) && (mo.Tics > 0))
+			if (mo.isFrozen())
+				break;
+
+			bool playercheck = !(mo.player);
+
+			if ((catchup < 0) && playercheck && (mo.Tics > 0))
 			{
 				mo.Tics++;
 				SetPos(mo, (mo.Pos) - (mo.Vel) * 2.0);
 			}
 			int thiscatchup = catchup;
-			while ((thiscatchup > 0) && !(mo.player) && (mo.Tics > 0) && (mo.Tics < thiscatchup))
+			while ((thiscatchup > 0) && playercheck && (mo.Tics > 0) && (mo.Tics < thiscatchup))
 			{
 				thiscatchup -= mo.Tics;
 				SetPos(mo, (mo.Pos) + (mo.Vel) * mo.Tics);
 				mo.Tics = 0;
 				mo.Tick();
 			}
-			if ((thiscatchup > 0) && !(mo.player) && (mo.Tics > 0) && (mo.Tics > thiscatchup))
+			if ((thiscatchup > 0) && playercheck && (mo.Tics > 0) && (mo.Tics > thiscatchup))
 			{
 				SetPos(mo, (mo.Pos) + (mo.Vel) * thiscatchup);
 				mo.Tics -= thiscatchup;
