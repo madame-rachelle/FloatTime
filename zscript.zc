@@ -47,8 +47,7 @@ class FloatTimeEventHandler : StaticEventHandler
 
 			if ((catchup < 0) && playercheck && (mo.Tics > 0))
 			{
-				mo.Tics++;
-				SetPos(mo, (mo.Pos) - (mo.Vel) * 2.0);
+				mo.freezetics++;
 			}
 			int thiscatchup = catchup;
 			while ((thiscatchup > 0) && playercheck && (mo.Tics > 0) && (mo.Tics < thiscatchup))
