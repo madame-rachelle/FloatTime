@@ -45,22 +45,19 @@ class FloatTimeEventHandler : StaticEventHandler
 
 			bool playercheck = !(mo.player);
 
-			if ((catchup < 0) && playercheck && (mo.Tics > 0))
+			if (playercheck)
 			{
-				mo.freezetics++;
-			}
-			int thiscatchup = catchup;
-			while ((thiscatchup > 0) && playercheck && (mo.Tics > 0) && (mo.Tics < thiscatchup))
-			{
-				thiscatchup -= mo.Tics;
-				SetPos(mo, (mo.Pos) + (mo.Vel) * mo.Tics);
-				mo.Tics = 0;
-				mo.Tick();
-			}
-			if ((thiscatchup > 0) && playercheck && (mo.Tics > 0) && (mo.Tics > thiscatchup))
-			{
-				SetPos(mo, (mo.Pos) + (mo.Vel) * thiscatchup);
-				mo.Tics -= thiscatchup;
+				if ((catchup < 0))
+				{
+					if (mo.tics > 0 && mo.freezetics < 1)
+						mo.freezetics = 1;
+				}
+				int thiscatchup = catchup;
+				while (thiscatchup-- > 0)
+				{
+					if (mo.tics > 0)
+						mo.Tick();
+				}
 			}
 		}
 		myticsint += catchup + 1;
