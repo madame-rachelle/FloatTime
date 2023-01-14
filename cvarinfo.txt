@@ -1,3 +1,3 @@
 cheat server float game_timescale = 1.0;
 cheat server bool game_freeze = false;
-
+cheat server bool game_smoothvel = false;

@@ -22,6 +22,7 @@ class FloatTimeEventHandler : StaticEventHandler
 	override void WorldTick()
 	{
 		double ticdelta = game_timescale;
+		bool smoothvel = game_smoothvel;
 		if (game_freeze)
 			ticdelta = 0.0;
 
@@ -51,6 +52,14 @@ class FloatTimeEventHandler : StaticEventHandler
 				{
 					if (mo.tics > 0 && mo.freezetics < 1)
 						mo.freezetics = 1;
+				}
+				else if (smoothvel && (game_timescale < 1))
+				{
+					mo.SetOrigin(mo.Pos - mo.Vel, false);
+				}
+				if (smoothvel && (game_timescale < 1))
+				{
+					mo.SetOrigin(mo.Pos + mo.Vel * game_timescale, true);
 				}
 				int thiscatchup = catchup;
 				while (thiscatchup-- > 0)
